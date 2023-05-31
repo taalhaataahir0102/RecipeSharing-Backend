@@ -1,19 +1,13 @@
+// 'mongodb+srv://talha:talha@cluster0.fkpkyuy.mongodb.net/'
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const path = require("path");
 
 const app = express();
 const port = 5000;
 
 app.use(cors());
 app.use(express.json());
-
-app.use(express.static(path.join(__dirname, "./client/build")));
-
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
 
 // MongoDB setup
 const atlasURI = 'mongodb+srv://talha:talha@cluster0.fkpkyuy.mongodb.net/'; // Replace with your MongoDB Atlas connection URI
