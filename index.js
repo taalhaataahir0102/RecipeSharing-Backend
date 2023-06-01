@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -47,16 +48,21 @@ app.post('/api/form', (req, res) => {
       });
   });
 
+  app.get('/api/users', (req, res) => {
+    User.find()
+      .then((users) => {
+        res.json(users);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch users:', err);
+        res.status(500).json({ error: 'Failed to fetch users' });
+      });
+  });
 
-
-//static files
-app.use(express.static(path.join(__dirname, "./client/build")));
-
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
-
-
+// Catch all handler for all other request.
+app.use('*', (req, res) => {
+    res.json({ msg: 'no route handler found' }).end()
+  })
 
 // Start the server
 const port = process.env.PORT || 5000;
