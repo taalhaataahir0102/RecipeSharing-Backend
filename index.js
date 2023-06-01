@@ -30,7 +30,7 @@ const formSchema = new mongoose.Schema({
 const Form = mongoose.model('Form', formSchema);
 
 // Routes
-app.post('/submit', (req, res) => {
+app.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
   const newForm = new Form({ name, email, password });
 
