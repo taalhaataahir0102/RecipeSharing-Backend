@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-console.log("Here start");
+// console.log("Here start");
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI, {
@@ -62,7 +62,7 @@ app.post('/api/signup', async (req, res) => {
 
 
 app.post('/api/signin', async (req, res) => {
-  console.log("here signin");
+  // console.log("here signin");
     try {
       const { email, password } = req.body;
   
