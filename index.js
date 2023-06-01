@@ -4,11 +4,14 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+console.log("Here start");
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI, {
@@ -32,7 +35,9 @@ const User = mongoose.model('User', userSchema);
 
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
+  console.log("here signup");
   try {
+    console.log(req.body);
     const { fullName, email, password } = req.body;
 
     // Check if the user already exists
@@ -57,6 +62,7 @@ app.post('/api/signup', async (req, res) => {
 
 
 app.post('/api/signin', async (req, res) => {
+  console.log("here signin");
     try {
       const { email, password } = req.body;
   
