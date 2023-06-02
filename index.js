@@ -91,10 +91,31 @@ app.post('/api/signin', async (req, res) => {
   });
   
   // Protected route
-app.get('/api/protected', authenticateToken, (req, res) => {
-    res.json({ message: 'Protected endpoint accessed' });
-  });
+// app.get('/api/protected', authenticateToken, (req, res) => {
+//     res.json({ message: 'Protected endpoint accessed' });
+//   });
   
+
+  app.get('/api/user', authenticateToken, (req, res) => {
+    // Retrieve the user ID from the authenticated request
+    const userId = req.user.userId;
+    
+    // Use the user ID to retrieve user information from the database
+    User.findById(userId)
+      .then(user => {
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+    
+        // Return the user information
+        return res.status(200).json({ user });
+      })
+      .catch(error => {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+      });
+  });
+
   // Middleware to authenticate JWT token
 function authenticateToken(req, res, next) {
     const authHeader = req.headers.authorization;
