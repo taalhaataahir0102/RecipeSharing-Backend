@@ -33,6 +33,22 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+
+
+const postSchema = new mongoose.Schema({
+  category: String,
+  ingredients: [String],
+  recipe: String,
+  image: String,
+  name: String,
+  comments: [String],
+  commentscount: Number,
+  likescount: Number,
+  rating: Number
+});
+
+const Post = mongoose.model('Post', postSchema);
+
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
   console.log("here signup");
@@ -120,6 +136,7 @@ app.post('/api/signin', async (req, res) => {
 function authenticateToken(req, res, next) {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
+    console.log(token);
   
     if (token === null) {
       return res.sendStatus(401);
@@ -135,15 +152,46 @@ function authenticateToken(req, res, next) {
   }
 
 
-app.get('/api/users', (req, res) => {
-    User.find()
-      .then((users) => {
-        res.json(users);
+app.get('/api/posts', (req, res) => {
+    Post.find()
+      .then((posts) => {
+        res.json(posts);
       })
       .catch((err) => {
-        console.error('Failed to fetch users:', err);
-        res.status(500).json({ error: 'Failed to fetch users' });
+        console.error('Failed to fetch posts:', err);
+        res.status(500).json({ error: 'Failed to fetch posts' });
       });
+  });
+
+  app.post('/api/post', authenticateToken, async (req, res) => {
+    console.log("Yess");
+    try {
+      let name = ''
+      const userId = req.user.userId;
+      await User.findById(userId)
+      .then(user => {
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+        name = user['fullName']
+        // console.log(name)
+      })
+
+      const { category, ingredients, recipe, image } = req.body;
+      const comments = []
+      const commentscount = 0
+      const likescount = 0
+      const rating = 0
+      console.log(category, ingredients, recipe,image, name, comments, commentscount, likescount, rating)
+  
+      // Create a new post with tags
+      const newPost = new Post({ category, ingredients, recipe,image, name, comments, commentscount, likescount, rating });
+      await newPost.save();
+      return res.status(201).json({ message: 'Post created successfully' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
   });
 
 // Catch all handler for all other request.
