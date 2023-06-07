@@ -456,6 +456,73 @@ app.post('/api/updatepassword', async (req, res) => {
 
 
 
+app.get('/api/dessert', (req, res) => {
+  Post.find({category: "Dessert"}) // Filter posts with category 'Dessert'
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((err) => {
+      console.error('Failed to fetch dessert posts:', err);
+      res.status(500).json({ error: 'Failed to fetch dessert posts' });
+    });
+});
+
+app.get('/api/vegetarian', (req, res) => {
+  Post.find({category: "Vegetarian"}) // Filter posts with category 'Dessert'
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((err) => {
+      console.error('Failed to fetch dessert posts:', err);
+      res.status(500).json({ error: 'Failed to fetch dessert posts' });
+    });
+});
+
+app.get('/api/meat', (req, res) => {
+  Post.find({category: "Meat"}) // Filter posts with category 'Dessert'
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((err) => {
+      console.error('Failed to fetch dessert posts:', err);
+      res.status(500).json({ error: 'Failed to fetch dessert posts' });
+    });
+});
+
+app.get('/api/sortlikes', (req, res) => {
+  Post.find()
+    .sort({ likescount: -1 }) // Sort posts in descending order based on likescount
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Failed to fetch posts' });
+    });
+});
+
+app.get('/api/sortcomments', (req, res) => {
+  Post.find()
+    .sort({ commentscount: -1 }) // Sort posts in descending order based on likescount
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Failed to fetch posts' });
+    });
+});
+
+app.get('/api/sortdates', (req, res) => {
+  Post.find()
+    .sort({ createdAt: -1 }) // Sort posts in descending order based on createdAt date
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Failed to fetch posts' });
+    });
+});
+
+
 // Catch all handler for all other request.
 app.use('*', (req, res) => {
     res.json({ msg: 'no route handler found' }).end()
