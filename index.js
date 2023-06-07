@@ -300,9 +300,10 @@ app.get('/api/shoppinglist', authenticateToken, async (req, res) => {
 
 
   // Assuming you're using Express.js
-  app.post('/api/liked', async (req, res) => {
+  app.post('/api/liked', authenticateToken, async (req, res) => {
     try {
       const { postId } = req.body;
+      const userId = req.user.userId;
   
       // Find the post by ID
       const post = await Post.findById(postId);
@@ -310,34 +311,40 @@ app.get('/api/shoppinglist', authenticateToken, async (req, res) => {
       if (!post) {
         return res.status(404).json({ error: 'Post not found' });
       }
+
+      const user1 = await User.findById(userId);
+
+        if (!user1) {
+          return res.status(404).json({ message: 'User not found' });
+        }
   
       // Get the email of the post
-      const postEmail = post.email;
+      // const postEmail = user1.email;
   
       // Find the user by email
-      const user = await User.findOne({ email: postEmail });
+      // const user = await User.findOne({ email: postEmail });
   
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
+      // if (!user) {
+      //   return res.status(404).json({ error: 'User not found' });
+      // }
   
-      const { favourite } = user;
+      const { favourite } = user1;
   
       // Check if the post ID is already in the user's favourite list
       const isLiked = favourite.includes(postId);
   
       if (isLiked) {
         // If already liked, remove the post ID from the favourite list and decrement likescount
-        user.favourite = favourite.filter((favId) => favId !== postId);
+        user1.favourite = favourite.filter((favId) => favId !== postId);
         post.likescount--;
       } else {
         // If not liked, add the post ID to the favourite list and increment likescount
-        user.favourite.push(postId);
+        user1.favourite.push(postId);
         post.likescount++;
       }
   
       // Save the updated user and post
-      await user.save();
+      await user1.save();
       await post.save();
   
       // Send the updated likescount in the response
