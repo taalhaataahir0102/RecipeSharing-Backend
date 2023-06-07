@@ -317,6 +317,8 @@ app.get('/api/shoppinglist', authenticateToken, async (req, res) => {
         if (!user1) {
           return res.status(404).json({ message: 'User not found' });
         }
+
+      // console.log(user1);
   
       // Get the email of the post
       // const postEmail = user1.email;
