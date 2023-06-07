@@ -5,6 +5,7 @@ const path = require('path');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 
 
 const app = express();
@@ -521,6 +522,51 @@ app.get('/api/sortdates', (req, res) => {
       res.status(500).json({ error: 'Failed to fetch posts' });
     });
 });
+
+
+
+
+app.post('/api/email', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const decodedToken = jwt.verify(token, 'secret-key');
+  const userId = decodedToken.userId;
+
+  try {
+    const user = await User.findById(userId);
+    const userEmail = user.email;
+    const shoppingList = req.body.shoppingList;
+
+    console.log(userEmail, shoppingList);
+
+    // Code to send email to the user with the shopping list goes here
+
+    const transporter = nodemailer.createTransport({
+      // Provide your email service provider configuration here
+      service: 'gmail',
+      auth: {
+        user: 'yourownrecipies@gmail.com',
+        pass: 'rzxoffczjkbjiwcf',
+      },
+    });
+
+    // Compose the email message
+    const emailMessage = {
+      from: 'yourownrecipies@gmail.com',
+      to: userEmail,
+      subject: 'Your Shopping List',
+      text: shoppingList.join('\n'), // Convert the shopping list array to a string
+    };
+
+    console.log("Here")
+
+    await transporter.sendMail(emailMessage);
+    res.json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+});
+
 
 
 // Catch all handler for all other request.
